@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="task_email_template" model="mail.template">
+            <field name="name">Proposal Mail Template</field>
+            <field name="model_id" ref="sale_proposal.model_proposal_proposal"/>
+            <field name="subject">Proposal</field>
+            <field name="email_from">{{ (object.salesman_id.email_formatted or user.email_formatted or '') }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px;">
+                        <p>Dear <t t-out="object.partner_id.name or ''"/>,</p>
+                        <p>Please Check your proposal for : <t t-out="object.name"/></p>
+                        <p>Here is the proposal link for your reference:- <t t-out="object.proposal_link"/></p>
+                        <p>Let us know if you have any questions</p>
+                        <p>Thank you.</p>
+                    </p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="False"/>
+        </record>
+    </data>
+</odoo>

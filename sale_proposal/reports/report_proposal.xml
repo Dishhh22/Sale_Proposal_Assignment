@@ -1,0 +1,115 @@
+<odoo>
+    <template id="report_proposal" name="Proposal Portal Template" inherit_id="portal.portal_sidebar"
+              primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <div class="row mt16 o_portal_proposal_sidebar">
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-auto d-print-none'"/>
+                    <t t-set="entries">
+                        <ul class="list-group list-group-flush flex-wrap flex-row flex-lg-column">
+                            <li class="navspy list-group-item ps-0 flex-grow-1" t-ignore="true" role="complementary">
+                                <ul class="nav flex-column bs-sidenav"></ul>
+                            </li>
+                            <li t-if="docs.salesman_id" class="list-group-item flex-grow-1">
+                                <div class="small mb-1">
+                                    <strong class="text-muted">Salesperson</strong>
+                                </div>
+                                <div class="row flex-nowrap">
+                                    <div class="col flex-grow-0 pe-2">
+                                        <img class="rounded-circle mr4 float-start o_portal_contact_img"
+                                             t-att-src="image_data_uri(docs.salesman_id.avatar_128)"
+                                             alt="Contact"/>
+                                    </div>
+                                    <div class="col ps-0" style="min-width: 150px">
+                                        <span t-field="docs.salesman_id"
+                                              t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": True}'/>
+                                        <a href="#discussion" class="small">
+                                            <i class="fa fa-comment"></i>
+                                            Send message
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </t>
+                </t>
+
+                <!-- Main content -->
+                <div id="docs_content" class="col-12 col-lg">
+                    <div id="introduction" class="page-header mt8">
+                        <h2>Proposal
+                            <span t-field="docs.name"/>
+                        </h2>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <strong>Customer:</strong>
+                            <p t-field="docs.partner_id"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Date:</strong>
+                            <p t-field="docs.date_order"/>
+                        </div>
+                    </div>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th class="text-right">Quantity Proposed</th>
+                                <th class="text-right">Price Proposed</th>
+                                <th class="text-right">Quantity Accepted</th>
+                                <th class="text-right">Price Accepted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs.line_ids" t-as="line">
+                                <tr>
+                                    <td>
+                                        <span t-field="line.product_id"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.name"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.qty_proposed"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <span t-field="line.price_proposed"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <input type="number"
+                                               t-att-value="line.qty_accepted" t-att-data-line-id="line.id"
+                                               class="form-control qty-accepted"/>
+                                    </td>
+                                    <td class="text-right">
+                                        <input type="number" step="0.01"
+                                               t-att-value="line.price_accepted" t-att-data-line-id="line.id"
+                                               class="form-control price-accepted"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 text-center">
+                    <t t-if="docs.state in ['draft', 'sent']">
+                        <button class="btn btn-primary" id="accept_proposal" t-att-data-proposal-id="docs.id">
+                            <i class="fa fa-check"/> Accept Proposal
+                        </button>
+                        <button class="btn btn-secondary" id="refuse_proposal" t-att-data-proposal-id="docs.id">
+                            <i class="fa fa-times"/> Refuse Proposal
+                        </button>
+                    </t>
+                </div>
+            </div>
+            <!-- Discussion section -->
+            <div class="mt32">
+                <h3>Discussion</h3>
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="docs"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+</odoo>

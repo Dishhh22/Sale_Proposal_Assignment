@@ -1,0 +1,72 @@
+<odoo>
+    <record id="proposal_proposal_view_form" model="ir.ui.view">
+        <field name="name">proposal.proposal.view.form</field>
+        <field name="model">proposal.proposal</field>
+        <field name="arch" type="xml">
+            <form string="proposal_proposal_form">
+                <header>
+                    <button name="action_move_to_sent" string="Sent" type="object" classs="oe_highlight"
+                            attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <button name="action_confirm" string="Confirm" type="object" classs="oe_highlight"
+                            attrs="{'invisible':[('state','!=','customer_accepted')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,confirmed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <h2><field name="name" readonly="True"/></h2>
+                        <group>
+                            <field name="partner_id" attrs="{'readonly':[('state','=','confirmed')]}"/>
+                            <field name="proposal_link" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="salesman_id" attrs="{'readonly':[('state','=','confirmed')]}"/>
+                            <field name="pricelist_id" attrs="{'readonly':[('state','=','confirmed')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Proposal Orders">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="product_id" attrs="{'readonly':[('parent.state','=','confirmed')]}"/>
+                                    <field name="name"/>
+                                    <field name="qty_proposed" attrs="{'readonly':[('parent.state','=','confirmed')]}"/>
+                                    <field name="qty_accepted" optional="hide"/>
+                                    <field name="price_proposed" attrs="{'readonly':[('parent.state','=','confirmed')]}"/>
+                                    <field name="price_accepted" optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="proposal_proposal_view_tree" model="ir.ui.view">
+        <field name="name">proposal.proposal.view.tree</field>
+        <field name="model">proposal.proposal</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="salesman_id"/>
+                <field name="pricelist_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="proposal_proposal_view_action" model="ir.actions.act_window">
+        <field name="name">Proposal</field>
+        <field name="res_model">proposal.proposal</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="proposal_proposal_root_menu"
+              name="Proposal"
+              action="proposal_proposal_view_action"/>
+</odoo>
